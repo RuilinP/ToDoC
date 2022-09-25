@@ -57,12 +57,12 @@ int main()
 
 void interface()
 {   
-    //FILE* fp;
-    //if(fopen("todo.txt", "r") != NULL){
-      // fclose(fp); 
-      // readfile();
-    //}
-    //fclose(fp);
+    FILE* fp;
+    fp = fopen("todo.txt", "r");
+    if(fp != NULL){
+       fclose(fp); 
+       readfile();
+    } 
     printf("~~~~~~~~~~~~~~~~~~~~~"
            "~~~~~~~~~~~~~~~~~~~~~~~~"
            "~~~~~~~~~~~~~~~~~~~~~~~~"
@@ -187,16 +187,37 @@ void writefile(){
 
 void readfile(){
      FILE *fptr;
+     char str[100];
+     int count = 1;
      process *temp = (process*)malloc(sizeof(process));
-     fopen("todo.txt","r");
-     fscanf(fptr, "%d %s", temp->count, temp->buffer);
+     fptr = fopen("todo.txt","r");
+     //fscanf(fptr, "%d %s", temp->count, temp->buffer);
+     fgets(str, sizeof(str), fptr);
+     temp->count = 1;
+     strcpy(temp->buffer, str+2); 
      start = temp;
      start->count = 1;
-     start->next = NULL;
-     process *temp1 = start;
-     while(fscanf(fptr, "%d %s", temp->count, temp->buffer)!=EOF){
-         temp1->next = temp;
-         temp1 = temp;
+     //start->next = NULL;
+     process *temp1 = NULL;
+     start->next = temp1;
+     memset(str, 0, sizeof(str));
+     count++;
+     if(fgets(str, sizeof(str),fptr)){
+        temp1 = (process*)malloc(sizeof(process));
+        temp1->count = count;
+        strcpy(temp1->buffer, str+2);
+        temp1->next = NULL;
+        start->next = temp1;
+     }
+     process* temp2;
+     while(fgets(str, sizeof(str), fptr)){
+         temp2 = (process*)malloc(sizeof(process));
+         temp2->count = count;
+         strcpy(temp2->buffer, str+2); 
+         temp1->next = temp2;
+         temp1 = temp1->next;
+         memset(str, 0, sizeof(str));
+
          //temp->next = NULL;
      }
      fclose(fptr);
