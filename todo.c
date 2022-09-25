@@ -42,7 +42,7 @@ int main()
                         createtodo();
                         break;
                 case 3:
-                        //deletetodo();
+                        deletetodo();
                         break;
                 case 4:
                         exit(1);
@@ -57,6 +57,12 @@ int main()
 
 void interface()
 {   
+    //FILE* fp;
+    //if(fopen("todo.txt", "r") != NULL){
+      // fclose(fp); 
+      // readfile();
+    //}
+    //fclose(fp);
     printf("~~~~~~~~~~~~~~~~~~~~~"
            "~~~~~~~~~~~~~~~~~~~~~~~~"
            "~~~~~~~~~~~~~~~~~~~~~~~~"
@@ -109,7 +115,7 @@ void createtodo(){
         fptr = fopen("todo.txt", "w");
         add = (process*)malloc(sizeof(process));
         start = add;
-        printf("\n \n input your first task: \n");
+        printf("\n \ninput your first task: \n");
         flush();
         fgets(add->buffer, 256, stdin);
         //printf("%s", name);      
@@ -120,7 +126,7 @@ void createtodo(){
      } else {
        fptr = fopen("todo.txt", "a");
        temp = (process*)malloc(sizeof(process));
-       printf("\n \n input your next task: \n");
+       printf("\n \ninput your next task: \n");
        //scanf("%100s", temp->buffer);
        flush();
        fgets(temp->buffer, 256, stdin);
@@ -135,6 +141,67 @@ void createtodo(){
      }
      updatecount();
 }
+
+void deletetodo(){
+     int x;
+     process *del, *temp;
+     if(start == NULL){
+        printf("Unfortunately, there's nothing left to remove");
+        
+     } else {
+     printf("\n \nEnter the ID of ToDo to be removed:");
+     scanf("%d", &x);
+     del = start;
+     temp = start->next;
+     while(1){
+             if(del-> count == x){
+                start = start->next;
+                free(del);
+                updatecount();
+                writefile();
+                break;
+             } else if(temp->count == x){
+               del->next = temp-> next;
+               free(temp);
+               updatecount();
+               writefile();
+               break;
+             } else{
+               del = temp;
+               temp = temp->next;
+             }
+     }}
+     
+}
+
+void writefile(){
+     FILE * fptr;
+     fptr = fopen("todo.txt", "w");
+     process *temp = start;
+     while(temp != NULL){
+          fprintf(fptr, "%d %s", temp->count, temp->buffer);
+          temp = temp->next;
+    }     
+    fclose(fptr);
+}
+
+void readfile(){
+     FILE *fptr;
+     process *temp = (process*)malloc(sizeof(process));
+     fopen("todo.txt","r");
+     fscanf(fptr, "%d %s", temp->count, temp->buffer);
+     start = temp;
+     start->count = 1;
+     start->next = NULL;
+     process *temp1 = start;
+     while(fscanf(fptr, "%d %s", temp->count, temp->buffer)!=EOF){
+         temp1->next = temp;
+         temp1 = temp;
+         //temp->next = NULL;
+     }
+     fclose(fptr);
+}
+
 
 void updatecount(){
      process* temp;
